@@ -33,6 +33,17 @@ public class UserController {
 
     }
 
+    @PostMapping("/registerEmployee")
+    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
+        UserResponseDTO createdUser;
+        try {
+            createdUser = userService.createEmployee(userRegisterRequestDTO);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
         UserResponseDTO updatedUser;
@@ -48,6 +59,17 @@ public class UserController {
     public ResponseEntity<String> delete(@PathVariable("id") Long id){
         try {
             userService.deleteUser(id);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
+    //Cambiar el estado del usuario para que pueda ser borrado
+    @GetMapping("/checkOut/{id}")
+    public ResponseEntity<?> checkOut(@PathVariable("id") Long id){
+        try {
+            userService.checkOut(id);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

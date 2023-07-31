@@ -20,8 +20,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Rol rol;
     private String password;
+    private Boolean checkOut = false;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Offices> offices;
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
@@ -122,5 +123,13 @@ public class User {
 
     public void setSavingsAccount(SavingsAccount savingsAccount) {
         this.savingsAccount = savingsAccount;
+    }
+
+    public Boolean getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(Boolean checkOut) {
+        this.checkOut = checkOut;
     }
 }

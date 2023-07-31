@@ -1,32 +1,21 @@
-package com.franbuss.ProjectBank.dto.request;
+package com.franbuss.ProjectBank.dto.response;
 
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
-public class CashTransferRequestDTO {
-    
-    private BigDecimal amount;
+public class TransferResponseDTO {
 
-    @NotBlank
     private String cbuUser;
 
-    @NotBlank
     private String cbuToUser;
 
-    public CashTransferRequestDTO() {
+    private BigDecimal amount;
+
+    public TransferResponseDTO() {
     }
 
-    public CashTransferRequestDTO(BigDecimal amount, String cbuUser, String cbuToUser) {
-        this.amount = amount;
+    public TransferResponseDTO(String cbuUser, String cbuToUser, BigDecimal amount) {
         this.cbuUser = cbuUser;
         this.cbuToUser = cbuToUser;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -44,5 +33,13 @@ public class CashTransferRequestDTO {
 
     public void setCbuToUser(String cbuToUser) {
         this.cbuToUser = cbuToUser;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

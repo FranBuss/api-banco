@@ -14,11 +14,13 @@ public interface UserService {
     UserResponseDTO updateUser(Long id, UserUpdateRequestDTO userUpdateRequestDTO) throws Exception;
 
     //Eliminar usuario
-    void deleteUser(Long id);
+    void deleteUser(Long id) throws Exception;
 
     //Listar usuarios
     List<UserResponseDTO> list();
 
-    
+    void checkOut(Long id) throws Exception;
+
+    UserResponseDTO createEmployee(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception;
 
 }

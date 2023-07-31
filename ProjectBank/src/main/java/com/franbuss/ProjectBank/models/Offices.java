@@ -1,6 +1,7 @@
 package com.franbuss.ProjectBank.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Offices {
@@ -15,16 +16,16 @@ public class Offices {
     private Bank bank;
 
     private String address;
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "user_id")
-    private User user;
+    private List<User> users;
 
-    public Offices(Long id, String location, Bank bank, String address, User user) {
+    public Offices(Long id, String location, Bank bank, String address, List<User> users) {
         this.id = id;
         this.location = location;
         this.bank = bank;
         this.address = address;
-        this.user = user;
+        this.users = users;
     }
 
     public Offices() {
@@ -62,11 +63,11 @@ public class Offices {
         this.address = address;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }
