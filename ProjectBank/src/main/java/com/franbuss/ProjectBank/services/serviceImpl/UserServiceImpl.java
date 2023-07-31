@@ -3,11 +3,10 @@ package com.franbuss.ProjectBank.services.serviceImpl;
 import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
 import com.franbuss.ProjectBank.dto.response.UserResponseDTO;
-import com.franbuss.ProjectBank.mapper.UserMapper;
+import com.franbuss.ProjectBank.enums.Rol;
 import com.franbuss.ProjectBank.models.User;
 import com.franbuss.ProjectBank.repositories.UserRepository;
 import com.franbuss.ProjectBank.services.service.UserService;
-import org.mapstruct.factory.Mappers;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final ModelMapper modelMapper;
-    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
@@ -31,12 +29,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception {
-        Optional<User> user = userRepository.findByEmail(userRegisterRequestDTO.getEmail());
+    public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception{
+        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
         if (user.isPresent()) {
             throw new Exception("User already exists");
         }
         User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
+
+        userMapped.setRol(Rol.CLIENTE);
+
         User saveUser = userRepository.save(userMapped);
         return modelMapper.map(saveUser, UserResponseDTO.class);
     }
@@ -75,8 +76,5 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public UserResponseDTO findByEmail(String email) {
-        return null;
-    }
+
 }

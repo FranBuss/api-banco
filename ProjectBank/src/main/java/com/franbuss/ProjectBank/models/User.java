@@ -1,7 +1,8 @@
 package com.franbuss.ProjectBank.models;
 
+import com.franbuss.ProjectBank.enums.Rol;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,25 +10,38 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
+    private String dni;
+    private String phoneNumber;
     private String name;
     private String lastName;
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
     private String password;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Bank> bankList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Offices> offices;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @JoinColumn(name = "savingsAccount_id")
+    private SavingsAccount savingsAccount;
 
     public User() {
     }
 
-    public User(Long id, String email, String name, String lastName, String password) {
+    public User(Long id, String email, String dni, String phoneNumber, String name, String lastName, Rol rol, String password, List<Offices> offices, SavingsAccount savingsAccount) {
         this.id = id;
         this.email = email;
+        this.dni = dni;
+        this.phoneNumber = phoneNumber;
         this.name = name;
         this.lastName = lastName;
+        this.rol = rol;
         this.password = password;
+        this.offices = offices;
+        this.savingsAccount = savingsAccount;
     }
 
     public Long getId() {
@@ -70,11 +84,43 @@ public class User {
         this.password = password;
     }
 
-//    public List<Bank> getBankList() {
-//        return bankList;
-//    }
-//
-//    public void setBankList(List<Bank> bankList) {
-//        this.bankList = bankList;
-//    }
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public List<Offices> getOffices() {
+        return offices;
+    }
+
+    public void setOffices(List<Offices> offices) {
+        this.offices = offices;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public SavingsAccount getSavingsAccount() {
+        return savingsAccount;
+    }
+
+    public void setSavingsAccount(SavingsAccount savingsAccount) {
+        this.savingsAccount = savingsAccount;
+    }
 }

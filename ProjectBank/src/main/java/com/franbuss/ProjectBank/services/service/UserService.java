@@ -19,9 +19,6 @@ public interface UserService {
     //Listar usuarios
     List<UserResponseDTO> list();
 
-    //Obtener usuario por email
-    UserResponseDTO findByEmail(String email);
-
-
+    
 
 }
