@@ -10,6 +10,8 @@ public class UserResponseDTO {
     private String name;
     @NotBlank
     private String lastName;
+    @NotBlank
+    private String phoneNumber;
 
     public UserResponseDTO() {
     }
@@ -36,5 +38,13 @@ public class UserResponseDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

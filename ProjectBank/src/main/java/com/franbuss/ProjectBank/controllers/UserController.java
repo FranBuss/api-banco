@@ -22,35 +22,58 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
         UserResponseDTO createdUser;
         try {
             createdUser = userService.createUser(userRegisterRequestDTO);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(createdUser);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/registerEmployee")
+    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
+        UserResponseDTO createdUser;
+        try {
+            createdUser = userService.createEmployee(userRegisterRequestDTO);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable("id") Long id,@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
+    public ResponseEntity<?> update(@PathVariable("id") Long id,@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
         UserResponseDTO updatedUser;
         try {
             updatedUser = userService.updateUser(id, userUpdateRequestDTO);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+        return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id){
         try {
             userService.deleteUser(id);
-            return ResponseEntity.status(HttpStatus.OK).body("success");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
+    //Cambiar el estado del usuario para que pueda ser borrado
+    @GetMapping("/checkOut/{id}")
+    public ResponseEntity<?> checkOut(@PathVariable("id") Long id){
+        try {
+            userService.checkOut(id);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/list")
