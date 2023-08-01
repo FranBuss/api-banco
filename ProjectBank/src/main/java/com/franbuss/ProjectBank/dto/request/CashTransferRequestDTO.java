@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class CashTransferRequestDTO {
-    
+
     private BigDecimal amount;
 
     @NotBlank

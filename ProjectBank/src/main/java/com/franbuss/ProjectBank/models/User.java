@@ -22,8 +22,9 @@ public class User {
     private String password;
     private Boolean checkOut = false;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Offices> offices;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "offices_id")
+    private Offices offices;
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     @JoinColumn(name = "savingsAccount_id")
@@ -32,7 +33,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String email, String dni, String phoneNumber, String name, String lastName, Rol rol, String password, List<Offices> offices, SavingsAccount savingsAccount) {
+    public User(Long id, String email, String dni, String phoneNumber, String name, String lastName, Rol rol, String password, Offices offices, SavingsAccount savingsAccount) {
         this.id = id;
         this.email = email;
         this.dni = dni;
@@ -93,11 +94,11 @@ public class User {
         this.rol = rol;
     }
 
-    public List<Offices> getOffices() {
+    public Offices getOffices() {
         return offices;
     }
 
-    public void setOffices(List<Offices> offices) {
+    public void setOffices(Offices offices) {
         this.offices = offices;
     }
 

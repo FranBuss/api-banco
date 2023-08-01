@@ -1,6 +1,7 @@
 package com.franbuss.ProjectBank.repositories;
 
 import com.franbuss.ProjectBank.models.Offices;
+import com.franbuss.ProjectBank.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
