@@ -6,7 +6,7 @@ public class SavingAccountRegisterRequestDTO {
 
     @NotBlank(message = "Please enter a correct dni")
     private String dni;
-//    @NotBlank(message = "Please enter an office id")
+
     private Long office_id;
 
     public SavingAccountRegisterRequestDTO() {
