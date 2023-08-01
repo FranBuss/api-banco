@@ -16,7 +16,7 @@ public class Offices {
     private Bank bank;
 
     private String address;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<User> users;
 

@@ -4,7 +4,9 @@ import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
 import com.franbuss.ProjectBank.dto.response.UserResponseDTO;
 import com.franbuss.ProjectBank.enums.Rol;
+import com.franbuss.ProjectBank.models.Offices;
 import com.franbuss.ProjectBank.models.User;
+import com.franbuss.ProjectBank.repositories.OfficesRepository;
 import com.franbuss.ProjectBank.repositories.UserRepository;
 import com.franbuss.ProjectBank.services.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -20,11 +22,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final OfficesRepository officesRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, OfficesRepository officesRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.officesRepository = officesRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -43,13 +47,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO createEmployee(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception {
+    public UserResponseDTO createEmployee(UserRegisterRequestDTO userRegisterRequestDTO, Long id) throws Exception {
         Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
+        Optional<Offices> office = officesRepository.findById(id);
+
         if (user.isPresent()) {
             throw new Exception("User already exists");
         }
+
+        if (!office.isPresent()){
+            throw new Exception("The office not exist!");
+        }
+
+        Offices optionalOffice = office.get();
+
         User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
         userMapped.setRol(Rol.EMPLEADO);
+        userMapped.setOffices(optionalOffice);
+
+        for (User users : optionalOffice.getUsers()) {
+            if (users.equals(userMapped)) {
+                throw new Exception("The user is already in the office!");
+            }
+        }
+
+        optionalOffice.getUsers().add(userMapped);
         User saveUser = userRepository.save(userMapped);
         return modelMapper.map(saveUser, UserResponseDTO.class);
     }
@@ -104,6 +126,14 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDTO> list() {
         List<User> userList = userRepository.findAll();
         return userList.stream()
+                .map(user -> modelMapper.map(user, UserResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<UserResponseDTO> getUsersByOffice(Long officeId){
+        List<User> employeesList = userRepository.findUsersByOfficeId(officeId);
+        return employeesList.stream()
                 .map(user -> modelMapper.map(user, UserResponseDTO.class))
                 .collect(Collectors.toList());
     }

@@ -3,6 +3,7 @@ package com.franbuss.ProjectBank.controllers;
 import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
 import com.franbuss.ProjectBank.dto.response.UserResponseDTO;
+import com.franbuss.ProjectBank.models.User;
 import com.franbuss.ProjectBank.services.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,10 @@ public class UserController {
     }
 
     @PostMapping("/registerEmployee")
-    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
+    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO, @RequestParam Long officeId){
         UserResponseDTO createdUser;
         try {
-            createdUser = userService.createEmployee(userRegisterRequestDTO);
+            createdUser = userService.createEmployee(userRegisterRequestDTO, officeId);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -54,6 +55,12 @@ public class UserController {
         }
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/listEmployees/{office_id}")
+    public List<UserResponseDTO> listEmployees(@PathVariable("office_id") Long id){
+        return userService.getUsersByOffice(id);
+    }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id){
