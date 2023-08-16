@@ -1,5 +1,6 @@
 package com.franbuss.ProjectBank.services.serviceImpl;
 
+import com.franbuss.ProjectBank.dto.request.UserLoginRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
 import com.franbuss.ProjectBank.dto.response.UserResponseDTO;
@@ -11,6 +12,8 @@ import com.franbuss.ProjectBank.repositories.UserRepository;
 import com.franbuss.ProjectBank.services.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OfficesRepository officesRepository;
+
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -31,18 +35,51 @@ public class UserServiceImpl implements UserService {
         this.modelMapper = modelMapper;
     }
 
-    @Override
-    public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception{
-        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
-        if (user.isPresent()) {
-            throw new Exception("User already exists");
+//    @Override
+//    public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception{
+//        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
+//        if (user.isPresent()) {
+//            throw new Exception("User already exists");
+//        }
+//        User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
+//
+//        userMapped.setRol(Rol.CLIENTE);
+//
+//        User saveUser = userRepository.save(userMapped);
+//        return modelMapper.map(saveUser, UserResponseDTO.class);
+//    }
+
+    // REGISTER WITH TOKEN
+    public UserResponseDTO registerUser(UserRegisterRequestDTO userRegister) throws Exception {
+        Optional<User> optionalUser = userRepository.findByEmail(userRegister.getEmail());
+
+        if (optionalUser.isPresent()){
+            throw new Exception("Login already exist!!");
         }
-        User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
 
-        userMapped.setRol(Rol.CLIENTE);
+        User user = modelMapper.map(userRegister, User.class);
 
-        User saveUser = userRepository.save(userMapped);
-        return modelMapper.map(saveUser, UserResponseDTO.class);
+        User  savedUser = userRepository.save(user);
+
+        return modelMapper.map(savedUser, UserResponseDTO.class);
+
+    }
+
+    //LOGIN WITH TOKEN
+
+    public UserResponseDTO loginUser(UserLoginRequestDTO userLogin) throws Exception {
+        Optional<User> optionalUser = userRepository.findByEmail(userLogin.getEmail());
+
+        if (optionalUser.isPresent()){
+            User user = optionalUser.get();
+
+            if (user.getPassword().equals(user.getPassword())){
+                return modelMapper.map(user, UserResponseDTO.class);
+            }
+            throw new Exception("Invalid password");
+        }
+
+        throw new Exception("Invalid user");
     }
 
     @Override
@@ -138,5 +175,14 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-
+    @Override
+    public UserResponseDTO findByEmail(String email) throws Exception {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isPresent()){
+            User optionalUser = user.get();
+            return modelMapper.map(optionalUser, UserResponseDTO.class);
+        } else {
+            throw new Exception ("Could not find user by email " + email);
+        }
+    }
 }

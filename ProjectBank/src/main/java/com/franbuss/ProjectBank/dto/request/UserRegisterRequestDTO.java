@@ -30,14 +30,22 @@ public class UserRegisterRequestDTO {
     public UserRegisterRequestDTO() {
     }
 
-    public UserRegisterRequestDTO(String email, String name, String lastName, String dni, String phoneNumber, String password) {
+    public UserRegisterRequestDTO(String email, String name, String lastName, String dni, String phoneNumber) {
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.dni = dni;
         this.phoneNumber = phoneNumber;
-        this.password = password;
     }
+
+    //    public UserRegisterRequestDTO(String email, String name, String lastName, String dni, String phoneNumber, String password) {
+//        this.email = email;
+//        this.name = name;
+//        this.lastName = lastName;
+//        this.dni = dni;
+//        this.phoneNumber = phoneNumber;
+//        this.password = password;
+//    }
 
     public String getEmail() {
         return email;

@@ -13,6 +13,8 @@ public class UserResponseDTO {
     @NotBlank
     private String phoneNumber;
 
+    private String token;
+
     public UserResponseDTO() {
     }
 
@@ -46,6 +48,14 @@ public class UserResponseDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
