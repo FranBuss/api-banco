@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface OfficesRepository extends JpaRepository<Offices, Long> {
 
     Optional<Offices> findByAddress(String address);
+    Optional<Offices> findByLocation(String location);
 
 
 }

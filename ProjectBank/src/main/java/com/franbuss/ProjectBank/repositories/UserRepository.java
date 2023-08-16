@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByDni(String dni);
 
-
     @Query("SELECT u FROM User u WHERE u.offices.id = :officeId")
     List<User> findUsersByOfficeId(@Param("officeId") Long id);
 

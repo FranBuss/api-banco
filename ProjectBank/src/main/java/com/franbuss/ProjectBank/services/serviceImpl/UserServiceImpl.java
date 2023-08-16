@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final OfficesRepository officesRepository;
     private final ModelMapper modelMapper;
 
@@ -131,6 +130,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
     public List<UserResponseDTO> getUsersByOffice(Long officeId){
         List<User> employeesList = userRepository.findUsersByOfficeId(officeId);
         return employeesList.stream()

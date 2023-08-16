@@ -17,7 +17,6 @@ public class Offices {
 
     private String address;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
     private List<User> users;
 
     public Offices(Long id, String location, Bank bank, String address, List<User> users) {

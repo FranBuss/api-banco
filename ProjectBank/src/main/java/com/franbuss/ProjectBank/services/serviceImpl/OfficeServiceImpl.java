@@ -31,13 +31,14 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeResponseDTO createOffice(Long bankId, OfficeRegisterRequestDTO officeRegisterRequestDTO) throws Exception {
         Optional<Bank> optionalBank = bankRepository.findById(bankId);
-        Optional<Offices> optionalOffice = officesRepository.findByAddress(officeRegisterRequestDTO.getAddress());
+        Optional<Offices> addressOffice = officesRepository.findByAddress(officeRegisterRequestDTO.getAddress());
+        Optional<Offices>  locationOffice = officesRepository.findByLocation(officeRegisterRequestDTO.getLocation());
 
         if(!optionalBank.isPresent()) {
             throw new Exception("Bank not found");
         }
-        if (optionalOffice.isPresent()) {
-            throw new Exception("The address is already taken");
+        if (addressOffice.isPresent() && locationOffice.isPresent()) {
+            throw new Exception("The address and location is already taken");
         }
 
         Bank bank = optionalBank.get();
