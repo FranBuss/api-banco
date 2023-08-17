@@ -9,9 +9,8 @@ public class UserResponseDTO {
     @NotBlank
     private String name;
     @NotBlank
-    private String lastName;
-    @NotBlank
-    private String phoneNumber;
+    private String username;
+
 
     public UserResponseDTO() {
     }
@@ -32,20 +31,12 @@ public class UserResponseDTO {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -53,8 +44,7 @@ public class UserResponseDTO {
         return "UserResponseDTO{" +
                 "email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }

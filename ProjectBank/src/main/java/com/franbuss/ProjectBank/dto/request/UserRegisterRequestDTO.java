@@ -13,13 +13,10 @@ public class UserRegisterRequestDTO {
     private String name;
 
     @NotBlank(message = "Please enter your last name")
-    private String lastName;
+    private String username;
 
     @NotBlank(message = "The dni is required")
     private String dni;
-
-    @NotBlank(message = "The Phone number is required")
-    private String phoneNumber;
 
     @NotBlank(message = "Please enter password")
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,16}$",
@@ -30,12 +27,11 @@ public class UserRegisterRequestDTO {
     public UserRegisterRequestDTO() {
     }
 
-    public UserRegisterRequestDTO(String email, String name, String lastName, String dni, String phoneNumber, String password) {
+    public UserRegisterRequestDTO(String email, String name, String username, String dni, String password) {
         this.email = email;
         this.name = name;
-        this.lastName = lastName;
+        this.username = username;
         this.dni = dni;
-        this.phoneNumber = phoneNumber;
         this.password = password;
     }
 
@@ -55,12 +51,12 @@ public class UserRegisterRequestDTO {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -79,11 +75,4 @@ public class UserRegisterRequestDTO {
         this.dni = dni;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }

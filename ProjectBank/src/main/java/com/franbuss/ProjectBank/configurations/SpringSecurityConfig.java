@@ -29,7 +29,7 @@ public class SpringSecurityConfig {
 
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.antMatchers("/api/auth/**").permitAll();
+                    authorize.antMatchers("/api/auth/**", "/user/**").permitAll();
                     authorize.anyRequest().authenticated();
                 });
         return http.build();
