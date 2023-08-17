@@ -1,5 +1,6 @@
 package com.franbuss.ProjectBank.services.serviceImpl;
 
+import com.franbuss.ProjectBank.configurations.UserAuthenticationProvider;
 import com.franbuss.ProjectBank.dto.request.UserLoginRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
@@ -13,6 +14,10 @@ import com.franbuss.ProjectBank.services.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,32 +30,26 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final OfficesRepository officesRepository;
-
+    private final AuthenticationManager authenticationManager;
+    private final UserAuthenticationProvider userAuthenticationProvider;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, OfficesRepository officesRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, OfficesRepository officesRepository,
+                           ModelMapper modelMapper, PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager, UserAuthenticationProvider userAuthenticationProvider) {
         this.userRepository = userRepository;
         this.officesRepository = officesRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.userAuthenticationProvider = userAuthenticationProvider;
     }
 
-//    @Override
-//    public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception{
-//        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
-//        if (user.isPresent()) {
-//            throw new Exception("User already exists");
-//        }
-//        User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
-//
-//        userMapped.setRol(Rol.CLIENTE);
-//
-//        User saveUser = userRepository.save(userMapped);
-//        return modelMapper.map(saveUser, UserResponseDTO.class);
-//    }
 
-    // REGISTER WITH TOKEN
-    public UserResponseDTO registerUser(UserRegisterRequestDTO userRegister) throws Exception {
+
+    public UserResponseDTO register(UserRegisterRequestDTO userRegister) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(userRegister.getEmail());
 
         if (optionalUser.isPresent()){
@@ -59,7 +58,9 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userRegister, User.class);
 
-        User  savedUser = userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(userRegister.getPassword()));
+
+        User savedUser = userRepository.save(user);
 
         return modelMapper.map(savedUser, UserResponseDTO.class);
 
@@ -67,19 +68,16 @@ public class UserServiceImpl implements UserService {
 
     //LOGIN WITH TOKEN
 
-    public UserResponseDTO loginUser(UserLoginRequestDTO userLogin) throws Exception {
-        Optional<User> optionalUser = userRepository.findByEmail(userLogin.getEmail());
+    public String login(UserLoginRequestDTO userLogin) throws Exception {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                userLogin.getUsernameOrEmail(), userLogin.getPassword()));
 
-        if (optionalUser.isPresent()){
-            User user = optionalUser.get();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            if (user.getPassword().equals(user.getPassword())){
-                return modelMapper.map(user, UserResponseDTO.class);
-            }
-            throw new Exception("Invalid password");
-        }
+        String token = userAuthenticationProvider.genereateToken(authentication);
 
-        throw new Exception("Invalid user");
+        return token;
+
     }
 
     @Override
@@ -98,7 +96,6 @@ public class UserServiceImpl implements UserService {
         Offices optionalOffice = office.get();
 
         User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
-        userMapped.setRol(Rol.EMPLEADO);
         userMapped.setOffices(optionalOffice);
 
         for (User users : optionalOffice.getUsers()) {
@@ -176,13 +173,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO findByEmail(String email) throws Exception {
+    public UserResponseDTO findByEmail(String email){
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isPresent()){
             User optionalUser = user.get();
             return modelMapper.map(optionalUser, UserResponseDTO.class);
-        } else {
-            throw new Exception ("Could not find user by email " + email);
         }
+        return null;
     }
 }

@@ -6,9 +6,8 @@ import javax.validation.constraints.Pattern;
 
 public class UserLoginRequestDTO{
 
-    @NotBlank(message = "Please enter email address")
-    @Email(message = "The email is not a valid email address")
-    private String email;
+    @NotBlank(message = "Please enter valid mail or username address")
+    private String usernameOrEmail;
 
     @NotBlank(message = "Please enter password")
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,16}$",
@@ -19,17 +18,17 @@ public class UserLoginRequestDTO{
     public UserLoginRequestDTO() {
     }
 
-    public UserLoginRequestDTO(String email, String password) {
-        this.email = email;
+    public UserLoginRequestDTO(String usernameOrEmail, String password) {
+        this.usernameOrEmail = usernameOrEmail;
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsernameOrEmail() {
+        return usernameOrEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsernameOrEmail(String usernameOrEmail) {
+        this.usernameOrEmail = usernameOrEmail;
     }
 
     public String getPassword() {

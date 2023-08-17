@@ -27,9 +27,9 @@ public interface UserService {
 
     public List<UserResponseDTO> getUsersByOffice(Long officeId);
 
-    UserResponseDTO findByEmail(String email) throws Exception;
+    UserResponseDTO findByEmail(String email);
 
-    UserResponseDTO loginUser(UserLoginRequestDTO userLogin) throws Exception;
-    UserResponseDTO registerUser(UserRegisterRequestDTO userRegister) throws Exception;
+    String login(UserLoginRequestDTO userLogin) throws Exception;
+    UserResponseDTO register(UserRegisterRequestDTO userRegister) throws Exception;
 
 }

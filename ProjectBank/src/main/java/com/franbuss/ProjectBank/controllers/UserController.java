@@ -22,17 +22,17 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
-//        UserResponseDTO createdUser;
-//        try {
-//            createdUser = userService.createUser(userRegisterRequestDTO);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//        return new ResponseEntity<>(createdUser.toString(), HttpStatus.CREATED);
-//
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO){
+        UserResponseDTO createdUser;
+        try {
+            createdUser = userService.register(userRegisterRequestDTO);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(createdUser.toString(), HttpStatus.CREATED);
+
+    }
 
     @PostMapping("/registerEmployee")
     public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO, @RequestParam Long officeId){
