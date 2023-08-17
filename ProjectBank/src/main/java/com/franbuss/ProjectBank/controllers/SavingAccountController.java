@@ -23,45 +23,45 @@ public class SavingAccountController {
         this.savingAccountService = savingAccountService;
     }
 
-    @PostMapping("/saving-account/")
-    public ResponseEntity<?> createSavingAccount(@Valid @RequestBody SavingAccountRegisterRequestDTO savingAccountRegisterRequestDTO) {
-        SavingAccountResponseDTO createdAccount;
-        try {
-            createdAccount = savingAccountService.createSavingAccount(savingAccountRegisterRequestDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/depositMoney")
-    public ResponseEntity<?> depositMoney(@Valid @RequestBody DepositAndExtractRequestDTO depositAndExtractRequestDTO){
-        try {
-            savingAccountService.depositMoney(depositAndExtractRequestDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Deposit accepted",HttpStatus.OK);
-    }
-
-    @PutMapping("/extractMoney")
-    public ResponseEntity<?> extractMoney(@Valid @RequestBody DepositAndExtractRequestDTO depositAndExtractRequestDTO) {
-        try {
-            savingAccountService.extractMoney(depositAndExtractRequestDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Extract accepted",HttpStatus.OK);
-    }
-
-    @PutMapping("/transferMoney")
-    public ResponseEntity<?> transferMoney(@Valid @RequestBody CashTransferRequestDTO cashTransferRequestDTO){
-        try {
-            savingAccountService.transferMoney(cashTransferRequestDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Transfer accepted",HttpStatus.OK);
-    }
+//    @PostMapping("/saving-account/")
+//    public ResponseEntity<?> createSavingAccount(@Valid @RequestBody SavingAccountRegisterRequestDTO savingAccountRegisterRequestDTO) {
+//        SavingAccountResponseDTO createdAccount;
+//        try {
+//            createdAccount = savingAccountService.createSavingAccount(savingAccountRegisterRequestDTO);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
+//    }
+//
+//    @PutMapping("/depositMoney")
+//    public ResponseEntity<?> depositMoney(@Valid @RequestBody DepositAndExtractRequestDTO depositAndExtractRequestDTO){
+//        try {
+//            savingAccountService.depositMoney(depositAndExtractRequestDTO);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity<>("Deposit accepted",HttpStatus.OK);
+//    }
+//
+//    @PutMapping("/extractMoney")
+//    public ResponseEntity<?> extractMoney(@Valid @RequestBody DepositAndExtractRequestDTO depositAndExtractRequestDTO) {
+//        try {
+//            savingAccountService.extractMoney(depositAndExtractRequestDTO);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity<>("Extract accepted",HttpStatus.OK);
+//    }
+//
+//    @PutMapping("/transferMoney")
+//    public ResponseEntity<?> transferMoney(@Valid @RequestBody CashTransferRequestDTO cashTransferRequestDTO){
+//        try {
+//            savingAccountService.transferMoney(cashTransferRequestDTO);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity<>("Transfer accepted",HttpStatus.OK);
+//    }
 
 }

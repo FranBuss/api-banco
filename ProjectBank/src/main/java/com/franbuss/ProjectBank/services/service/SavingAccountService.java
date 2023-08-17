@@ -6,14 +6,14 @@ import com.franbuss.ProjectBank.dto.request.SavingAccountRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.response.SavingAccountResponseDTO;
 
 public interface SavingAccountService {
-    public String cbuGenerator();
-
-    SavingAccountResponseDTO createSavingAccount(SavingAccountRegisterRequestDTO savingAccountRegisterRequestDTO) throws Exception;
-
-    void depositMoney(DepositAndExtractRequestDTO depositAndExtractRequestDTO) throws Exception;
-
-    void extractMoney(DepositAndExtractRequestDTO depositAndExtractRequestDTO) throws Exception;
-
-    void transferMoney(CashTransferRequestDTO cashTransferRequestDTO) throws Exception;
+//    public String cbuGenerator();
+//
+//    SavingAccountResponseDTO createSavingAccount(SavingAccountRegisterRequestDTO savingAccountRegisterRequestDTO) throws Exception;
+//
+//    void depositMoney(DepositAndExtractRequestDTO depositAndExtractRequestDTO) throws Exception;
+//
+//    void extractMoney(DepositAndExtractRequestDTO depositAndExtractRequestDTO) throws Exception;
+//
+//    void transferMoney(CashTransferRequestDTO cashTransferRequestDTO) throws Exception;
 
 }

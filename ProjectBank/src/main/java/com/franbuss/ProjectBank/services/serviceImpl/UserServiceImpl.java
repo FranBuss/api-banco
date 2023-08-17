@@ -1,5 +1,7 @@
 package com.franbuss.ProjectBank.services.serviceImpl;
 
+import com.franbuss.ProjectBank.configurations.JwtTokenProvider;
+import com.franbuss.ProjectBank.dto.request.LoginRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserRegisterRequestDTO;
 import com.franbuss.ProjectBank.dto.request.UserUpdateRequestDTO;
 import com.franbuss.ProjectBank.dto.response.UserResponseDTO;
@@ -11,6 +13,11 @@ import com.franbuss.ProjectBank.repositories.UserRepository;
 import com.franbuss.ProjectBank.services.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,59 +28,75 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final OfficesRepository officesRepository;
+
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, OfficesRepository officesRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper,
+                           AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
-        this.officesRepository = officesRepository;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public UserResponseDTO createUser(UserRegisterRequestDTO userRegisterRequestDTO) throws Exception{
-        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
+        Optional<User> user = userRepository.findByDniOrEmail(userRegisterRequestDTO.getDni(), userRegisterRequestDTO.getEmail());
         if (user.isPresent()) {
             throw new Exception("User already exists");
         }
         User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
-
-        userMapped.setRol(Rol.CLIENTE);
 
         User saveUser = userRepository.save(userMapped);
         return modelMapper.map(saveUser, UserResponseDTO.class);
     }
 
     @Override
-    public UserResponseDTO createEmployee(UserRegisterRequestDTO userRegisterRequestDTO, Long id) throws Exception {
-        Optional<User> user = userRepository.findByDni(userRegisterRequestDTO.getDni());
-        Optional<Offices> office = officesRepository.findById(id);
+    public String login(LoginRequestDTO loginDto) {
 
-        if (user.isPresent()) {
-            throw new Exception("User already exists");
-        }
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
-        if (!office.isPresent()){
-            throw new Exception("The office not exist!");
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Offices optionalOffice = office.get();
+        String token = jwtTokenProvider.generateToken(authentication);
 
-        User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
-        userMapped.setRol(Rol.EMPLEADO);
-        userMapped.setOffices(optionalOffice);
-
-        for (User users : optionalOffice.getUsers()) {
-            if (users.equals(userMapped)) {
-                throw new Exception("The user is already in the office!");
-            }
-        }
-
-        optionalOffice.getUsers().add(userMapped);
-        User saveUser = userRepository.save(userMapped);
-        return modelMapper.map(saveUser, UserResponseDTO.class);
+        return token;
     }
+
+//    @Override
+//    public UserResponseDTO createEmployee(UserRegisterRequestDTO userRegisterRequestDTO, Long id) throws Exception {
+//        Optional<User> user = userRepository.findByDniOrEmail(userRegisterRequestDTO.getDni(), userRegisterRequestDTO.getEmail());
+////        Optional<Offices> office = officesRepository.findById(id);
+//
+//        if (user.isPresent()) {
+//            throw new Exception("User already exists");
+//        }
+//
+////        if (!office.isPresent()){
+////            throw new Exception("The office not exist!");
+////        }
+////
+////        Offices optionalOffice = office.get();
+//
+//        User userMapped = modelMapper.map(userRegisterRequestDTO, User.class);
+//
+////        for (User users : optionalOffice.getUsers()) {
+////            if (users.equals(userMapped)) {
+////                throw new Exception("The user is already in the office!");
+////            }
+////        }
+////
+////        optionalOffice.getUsers().add(userMapped);
+//        User saveUser = userRepository.save(userMapped);
+//        return modelMapper.map(saveUser, UserResponseDTO.class);
+//    }
 
     @Override
     public UserResponseDTO updateUser(Long id, UserUpdateRequestDTO userUpdateRequestDTO) throws Exception {
@@ -82,9 +105,6 @@ public class UserServiceImpl implements UserService {
             User optionalUser = user.get();
             if (userUpdateRequestDTO.getName() != null && userUpdateRequestDTO.getName().isEmpty()){
                 optionalUser.setName(userUpdateRequestDTO.getName());
-            }
-            if (userUpdateRequestDTO.getLastName() != null && userUpdateRequestDTO.getLastName().isEmpty()){
-                optionalUser.setLastName(userUpdateRequestDTO.getLastName());
             }
             if (userUpdateRequestDTO.getPassword() != null && userUpdateRequestDTO.getPassword().isEmpty()){
                 optionalUser.setPassword(userUpdateRequestDTO.getPassword());
@@ -101,25 +121,13 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             User userToBeDelete = user.get();
-            if (userToBeDelete.getCheckOut()){
-                userRepository.deleteById(id);
-            }
+            userRepository.deleteById(userToBeDelete.getId());
         } else {
             throw new Exception("User cannot be deleted");
         }
     }
 
-    @Override
-    public void checkOut(Long id) throws Exception {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            User optionalUser = user.get();
-            optionalUser.setCheckOut(true);
-            userRepository.save(optionalUser);
-        } else {
-            throw new Exception("User not found");
-        }
-    }
+
 
     @Override
     public List<UserResponseDTO> list() {
@@ -130,13 +138,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public List<UserResponseDTO> getUsersByOffice(Long officeId){
-        List<User> employeesList = userRepository.findUsersByOfficeId(officeId);
-        return employeesList.stream()
-                .map(user -> modelMapper.map(user, UserResponseDTO.class))
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<UserResponseDTO> getUsersByOffice(Long officeId){
+//        List<User> employeesList = userRepository.findUsersByOfficeId(officeId);
+//        return employeesList.stream()
+//                .map(user -> modelMapper.map(user, UserResponseDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
 
 }

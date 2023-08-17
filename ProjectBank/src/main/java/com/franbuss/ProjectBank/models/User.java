@@ -4,6 +4,7 @@ import com.franbuss.ProjectBank.enums.Rol;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -12,38 +13,35 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String dni;
-    private String phoneNumber;
     private String name;
-    private String lastName;
-    @Enumerated(EnumType.STRING)
-    private Rol rol;
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String dni;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false)
     private String password;
-    private Boolean checkOut = false;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "offices_id")
-    private Offices offices;
-
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    @JoinColumn(name = "savingsAccount_id")
-    private SavingsAccount savingsAccount;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(Long id, String email, String dni, String phoneNumber, String name, String lastName, Rol rol, String password, Offices offices, SavingsAccount savingsAccount) {
+    public User(Long id, String name, String username,String dni, String email, String password, Set<Role> roles) {
         this.id = id;
-        this.email = email;
-        this.dni = dni;
-        this.phoneNumber = phoneNumber;
         this.name = name;
-        this.lastName = lastName;
-        this.rol = rol;
+        this.username = username;
+        this.dni = dni;
+        this.email = email;
         this.password = password;
-        this.offices = offices;
-        this.savingsAccount = savingsAccount;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -54,14 +52,6 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getName() {
         return name;
     }
@@ -70,36 +60,12 @@ public class User {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
-    public Offices getOffices() {
-        return offices;
-    }
-
-    public void setOffices(Offices offices) {
-        this.offices = offices;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getDni() {
@@ -110,27 +76,27 @@ public class User {
         this.dni = dni;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public SavingsAccount getSavingsAccount() {
-        return savingsAccount;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSavingsAccount(SavingsAccount savingsAccount) {
-        this.savingsAccount = savingsAccount;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Boolean getCheckOut() {
-        return checkOut;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setCheckOut(Boolean checkOut) {
-        this.checkOut = checkOut;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

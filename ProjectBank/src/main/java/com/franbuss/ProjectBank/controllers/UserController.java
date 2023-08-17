@@ -34,16 +34,16 @@ public class UserController {
 
     }
 
-    @PostMapping("/registerEmployee")
-    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO, @RequestParam Long officeId){
-        UserResponseDTO createdUser;
-        try {
-            createdUser = userService.createEmployee(userRegisterRequestDTO, officeId);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
+//    @PostMapping("/registerEmployee")
+//    public ResponseEntity<?> employeeRegister(@Valid @RequestBody UserRegisterRequestDTO userRegisterRequestDTO, @RequestParam Long officeId){
+//        UserResponseDTO createdUser;
+//        try {
+//            createdUser = userService.createEmployee(userRegisterRequestDTO, officeId);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+//    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id,@Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO){
@@ -56,10 +56,10 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/listEmployees/{office_id}")
-    public List<UserResponseDTO> listEmployees(@PathVariable("office_id") Long id){
-        return userService.getUsersByOffice(id);
-    }
+//    @GetMapping("/listEmployees/{office_id}")
+//    public List<UserResponseDTO> listEmployees(@PathVariable("office_id") Long id){
+//        return userService.getUsersByOffice(id);
+//    }
 
 
     @DeleteMapping("/delete/{id}")
@@ -72,16 +72,6 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
-    //Cambiar el estado del usuario para que pueda ser borrado
-    @GetMapping("/checkOut/{id}")
-    public ResponseEntity<?> checkOut(@PathVariable("id") Long id){
-        try {
-            userService.checkOut(id);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Success", HttpStatus.OK);
-    }
 
     @GetMapping("/list")
     public List<UserResponseDTO> list(){
