@@ -22,11 +22,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JWTAuthResponse> authenticate(@RequestBody LoginRequestDTO loginRequestDTO){
         String token = userService.login(loginRequestDTO);
+
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
         jwtAuthResponse.setToken(token);
 
         return ResponseEntity.ok(jwtAuthResponse);
-
     }
 
 }
