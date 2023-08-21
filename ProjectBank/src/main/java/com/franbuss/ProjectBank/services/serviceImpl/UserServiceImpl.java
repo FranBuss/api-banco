@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private  UserRepository userRepository;
 
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final ModelMapper modelMapper;
+    private  AuthenticationManager authenticationManager;
+    private  PasswordEncoder passwordEncoder;
+    private  JwtTokenProvider jwtTokenProvider;
+    private  ModelMapper modelMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper,
